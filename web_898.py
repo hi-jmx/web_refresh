@@ -33,6 +33,8 @@ class My_driver:
 
     def find_item(self, url, number):
         # self.web_driver.send_keys(Keys.ESCAPE)
+        handles = self.web_driver.window_handles
+        self.web_driver.switch_to.window(handles[0])
         self.web_driver.get(url)
         # / html / body / div[4] / div[2] / div[4] / div[3] / div[2] / div / a[1]
         # /html/body/div[4]/div[2]/div[4]/div[3]/div[2]/div/a[4]/span
@@ -60,9 +62,14 @@ class My_driver:
         print('price:{}'.format(money_m))
         print('number:{}'.format(number))
         if float(money_m) > float(number):
-            self.web_driver.find_element_by_xpath('/html/body/form/div[3]/div[2]/div[5]/div[4]/div[15]/div[4]/div[4]/div[5]/ul[1]/li[4]/a').click()
+            print('money_m > number')
+            # /html/body/form/div[3]/div[2]/div[5]/div[4]/div[15]/div[4]/div[4]/div[5]/ul[2]/li[4]/a
+            # self.web_driver.find_element_by_xpath('/html/body/form/div[3]/div[2]/div[5]/div[4]/div[15]/div[4]/div[4]/div[5]/ul[1]/li[4]/a').click()
+            self.web_driver.find_element_by_css_selector('.sp_li1 > a').click()
+
             return True
         else:
+            print('money_m <= number')
             return False
 
     def check(self):
@@ -198,8 +205,16 @@ class My_driver:
         return True
 
     def handle(self, url, number, area, server, name, qq):
+        handles = self.web_driver.window_handles
+        print(handles)
+        if len(handles) == 3:
+            self.web_driver.switch_to.window(handles[2])
+            self.web_driver.close()
+            self.web_driver.switch_to.window(handles[1])
+            self.web_driver.close()
+        elif len(handles) == 2:
+            self.web_driver.close()
         while True:
-            self.find_item(url, number)
             if self.find_item(url, number):
                 print('find it!')
                 if self.fill_info(area, server, name, qq):
