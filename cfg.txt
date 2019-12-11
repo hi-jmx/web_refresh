@@ -1,8 +1,8 @@
 [config]
-my_url:http://s.5173.com/dnf-0-4qsi30-xk1ly2-0-bx1xiv-0-0-0-a-a-a-a-a-0-0-0-0.shtml
+my_url:http://www.uu898.com/newTrade.aspx?gm=95&area=2330&srv=25093&c=-3&sx=2524a2
 my_user:18560021760
 my_pswd:gyshjmx
-number:62.00
+number:66.00
 area:山东区
 server:山东1区
 name:jmx
