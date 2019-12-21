@@ -22,9 +22,19 @@ class My_driver:
         self.value = 1
         self.startIndex = -1
         self.endIndex = -1
+        self.number_m = 0
+        self.price = 0
 
     def login(self, url, user_name, pswd):
         self.web_driver.get(url)
+        try:
+            self.web_driver.find_element_by_id('serach').click()
+        except:
+            pass
+        try:
+            self.web_driver.find_element_by_css_selector('#formMain > div.top > div:nth-child(6) > div.xy3d > i').click();
+        except:
+            pass
         self.web_driver.find_element_by_xpath('/html/body/form/div[3]/div[1]/div[1]/div/ul[1]/li/p/span[1]/a').click()
         self.web_driver.find_element_by_name('UserName').send_keys(user_name)
         self.web_driver.find_element_by_name('PassWord').send_keys(pswd)
@@ -53,15 +63,21 @@ class My_driver:
         print(self.targetUrl)
         try:
             money_m = re.search('<span>1元=(.*?)万金</span>', self.targetUrl).group(1)
+            # <h5 title="">1</h5>
+            self.number_m = re.search('<li class="sp_li3"><h5 title="">(.*?)</h5></li>', self.targetUrl).group(1)
+            # <span style="font-size: 18px;"> 610.00</span>
+            # <span
+            #                                             style="font-size: 18px;"> 614.80</span>
+            self.price = re.search('style="font-size: 18px;"> (.*?)</span>', self.targetUrl).group(1)
         except:
             print('find money or url may error!')
             print(web_string)
 
             return
 
-        print('price:{}'.format(money_m))
+        print('money_m:{} number_m {} price {}'.format(money_m, self.number_m, self.price))
         print('number:{}'.format(number))
-        if float(money_m) > float(number):
+        if (float(money_m) > float(number)) and (float(self.price) >= 50.0) and (float(self.price) <= 2000.0) and (float(self.price) * (float(self.number_m)) < 5000.0):
             print('money_m > number')
             # /html/body/form/div[3]/div[2]/div[5]/div[4]/div[15]/div[4]/div[4]/div[5]/ul[2]/li[4]/a
             # self.web_driver.find_element_by_xpath('/html/body/form/div[3]/div[2]/div[5]/div[4]/div[15]/div[4]/div[4]/div[5]/ul[1]/li[4]/a').click()
@@ -74,21 +90,11 @@ class My_driver:
 
     def check(self):
         # self.web_driver.get(target_url)
-        try:
-            # self.web_driver.switch_to_alert().accept()
-            pass
+        # http://www.uu898.com/newCreateSingleOrder.aspx?ID=ES20191214164954-09251
+        if -1 == self.web_driver.current_url.find('Create'):
             return False
-        except:
-            pass
-        try:
-            self.web_driver.find_element_by_id('divNotBuy')
-            print('can not bug')
+        else:
             return True
-        # except NoSuchElementException:
-        #     self.web_driver.find_element_by_id('linkCreateOrder').click
-        #     return False
-        except NoSuchElementException:
-            return False
 
     def fill_area(self, area):
         # 切换界面
@@ -165,6 +171,11 @@ class My_driver:
             return True
         return False
 
+    def fill_number(self):
+        #try:
+            # self.web_driver.find_element_by_xpath('(//*[@id="kf_list"]/li)[last()]').click()
+            # self.web_driver.find_element_by_xpath('(//*[@id="countList"])').click()
+        pass
 
     def fill_info(self, area, server, name, qq):
         if self.check():
@@ -219,13 +230,28 @@ class My_driver:
                 print('find it!')
                 if self.fill_info(area, server, name, qq):
                     # 提醒
-                    self.web_driver.find_element_by_xpath('/html/body/form/div[13]/li/button').click()
+                    print('before button')
+                    try:
+                        self.web_driver.find_element_by_xpath('/html/body/form/div[13]/li/button').click()
+                    except:
+                        pass
+                    try:
+                        self.web_driver.find_element_by_id('ckbUseBalance').click()
+                    except:
+                        pass
+                    try:
+                        self.web_driver.find_element_by_css_selector('#divNoValidate > div > div > div.pop-grounp-btn07 > a.pop-btn07.blue-btn07').click()
+                    except:
+                        pass
+                    print('before mp3')
+                    # playsound('C:\\Users\\Administrator\\Desktop\\dist\\shandong1\\1.mp3')
                     playsound('1.mp3')
                     self.targetUrl = ''
                     self.s_role = ''
                     self.value = 2
                     self.startIndex = -1
                     self.endIndex = -1
+                    self.number_m = 0
                     break
 
     def handler_adaptor(self, fun, my_url, number, area, server, name, qq):
